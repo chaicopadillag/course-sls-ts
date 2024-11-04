@@ -1,0 +1,6 @@
+auction :
+  handler: src/auction/handler.createAuction
+  events:
+    - httpApi:
+        path: /auction
+        method: POST  

@@ -1,0 +1,13 @@
+env:
+  local:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    STAGE: "${self:custom.stage}"
+  develop:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    STAGE: "${self:custom.stage}"
+  staging:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    STAGE: "${self:custom.stage}"
+  prod:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    STAGE: "${self:custom.stage}"

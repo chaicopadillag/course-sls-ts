@@ -1,0 +1,59 @@
+
+org: devchaico
+app: auction-service
+service: auction-service
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  memorySize: 512
+  profile: ${opt:stage, 'dev'}
+  region: us-east-2
+  stage: dev
+  environment: ${file(src/config/environment.yml):env.${self:custom.stage}}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource:
+        - arn:aws:dynamodb:${self:provider.region}:768239370372:table/AuctionsTable
+  
+resources:
+  Resources:
+    AuctionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: AuctionsTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+
+functions:
+  - ${file(src/functions.yml)}
+
+plugins:
+  - serverless-offline
+  - serverless-localstack
+
+custom:
+  esbuild:
+    bundle: true
+    minify: true
+    # sourcemap: true
+  stage: '${opt:stage, "develop"}'
+  localstack:
+    stages:
+      - local
+    host: http://localhost
+    edgePort: 4566
+    autostart: false
+    lambda:
+      mountCode: True
+    docker:
+      sudo: False
+
