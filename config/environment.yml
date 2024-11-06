@@ -2,12 +2,19 @@ env:
   local:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     STAGE: "${self:custom.stage}"
-  develop:
+    AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+
+  dev:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     STAGE: "${self:custom.stage}"
-  staging:
+    AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+
+  qa:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     STAGE: "${self:custom.stage}"
+    AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+
   prod:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     STAGE: "${self:custom.stage}"
+    AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}

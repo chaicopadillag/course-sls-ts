@@ -1,0 +1,24 @@
+createAuction:
+  handler: src/handlers/auction/createAuctionHandler.handler
+  events:
+    - httpApi:
+        path: /auction
+        method: POST
+getAuctions:
+  handler: src/handlers/auction/getAuctionsHandler.handler
+  events:
+    - httpApi:
+        path: /auction
+        method: GET
+getAuctionById:
+  handler: src/handlers/auction/getAuctionByIdHandler.handler
+  events:
+    - httpApi:
+        path: /auction/{id}
+        method: GET
+updateAction:
+  handler: src/handlers/auction/updateActionHandler.handler
+  events:
+    - httpApi:
+        path: /auction/{id}
+        method: PATCH

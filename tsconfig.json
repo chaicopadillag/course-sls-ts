@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "CommonJS",
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -9,8 +10,12 @@
     "outDir": "build",
     "rootDir": "src",
     "removeComments": true,
-
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@libs": ["src/libs/index.ts"],
+    }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "build"]
+  "exclude": ["node_modules", "build"],  
 }
