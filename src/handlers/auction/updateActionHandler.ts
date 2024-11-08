@@ -1,20 +1,31 @@
-import { appMiddleware } from '@libs';
+import { dynamoDB } from '@/db';
+import { appBuildResponse, appMiddleware } from '@libs';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
-import aws from 'aws-sdk';
+import { getAuctionById } from './common';
 
-const dynamoDB = new aws.DynamoDB.DocumentClient();
-
-const placinBidAuction = async (event: APIGatewayProxyEvent, context: Context) => {
+const placingBidAuction = async (event: APIGatewayProxyEvent, context: Context) => {
   try {
     const body = event.body as any;
     const { id } = event.pathParameters as { id: string };
 
     if (!id) {
-      return {
-        statusCode: 422,
-        body: JSON.stringify({ message: 'Missing id' })
-      };
+      return appBuildResponse({ message: 'Missing id' }, 422);
     }
+
+    const auction = await getAuctionById(id);
+
+    if (!auction) {
+      return appBuildResponse({ message: 'Auction not found' }, 404);
+    }
+
+    if (auction.status !== 'OPEN') {
+      return appBuildResponse({ message: 'You cannot bid on closed auctions' }, 409);
+    }
+
+    if (auction?.highestBid?.amount >= body.amount) {
+      return appBuildResponse({ message: `Your bid must be higher than ${auction.highestBid.amount}` }, 409);
+    }
+
     const now = new Date();
 
     const result = await dynamoDB
@@ -30,17 +41,11 @@ const placinBidAuction = async (event: APIGatewayProxyEvent, context: Context) =
       })
       .promise();
 
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(result.Attributes)
-    };
+    return appBuildResponse(result.Attributes);
   } catch (error) {
     console.error(error);
     throw new Error('Something went wrong');
   }
 };
 
-export const handler = appMiddleware(placinBidAuction);
+export const handler = appMiddleware(placingBidAuction);

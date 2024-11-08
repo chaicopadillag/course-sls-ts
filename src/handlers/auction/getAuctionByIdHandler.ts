@@ -1,40 +1,26 @@
-import { appMiddleware } from '@/libs';
+import { appBuildResponse, appMiddleware } from '@/libs';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
-import aws from 'aws-sdk';
+import { getAuctionById } from './common';
 
-const dynamoDB = new aws.DynamoDB.DocumentClient();
-
-const getAuctionById = async (event: APIGatewayProxyEvent, context: Context) => {
+const getAuctionByIdHandler = async (event: APIGatewayProxyEvent, context: Context) => {
   try {
     const { id } = event.pathParameters as { id: string };
 
     if (!id) {
-      return {
-        statusCode: 422,
-        body: JSON.stringify({ message: 'Missing id' })
-      };
+      return appBuildResponse({ message: 'Missing id' }, 422);
     }
 
-    const result = await dynamoDB
-      .get({
-        TableName: process.env.AUCTIONS_TABLE_NAME || 'UnkownTable',
-        Key: { id }
-      })
-      .promise();
+    const auction = await getAuctionById(id);
 
-    const auction = result.Item;
+    if (!auction) {
+      return appBuildResponse({ message: 'Auction not found' }, 404);
+    }
 
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(auction)
-    };
+    return appBuildResponse(auction);
   } catch (error) {
     console.error(error);
     throw new Error('Something went wrong');
   }
 };
 
-export const handler = appMiddleware(getAuctionById);
+export const handler = appMiddleware(getAuctionByIdHandler);

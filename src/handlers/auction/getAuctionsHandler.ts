@@ -1,8 +1,6 @@
-import { appMiddleware } from '@/libs';
+import { dynamoDB } from '@/db';
+import { appBuildResponse, appMiddleware } from '@/libs';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
-import aws from 'aws-sdk';
-
-const dynamoDB = new aws.DynamoDB.DocumentClient();
 
 const getAuctions = async (event: APIGatewayProxyEvent, context: Context) => {
   try {
@@ -14,13 +12,7 @@ const getAuctions = async (event: APIGatewayProxyEvent, context: Context) => {
 
     const auctions = result.Items;
 
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(auctions)
-    };
+    return appBuildResponse(auctions);
   } catch (error) {
     console.error(error);
     throw new Error('Something went wrong');

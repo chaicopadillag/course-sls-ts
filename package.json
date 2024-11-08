@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "sls offline --stage dev",
+    "deploy": "sls deploy --verbose --stage dev",
+    "remove": "sls revome",
     "build": "tsc"
   },
   "author": "@chaicopadillag",
