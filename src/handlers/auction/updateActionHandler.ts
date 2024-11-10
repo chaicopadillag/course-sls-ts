@@ -1,7 +1,10 @@
 import { dynamoDB } from '@/db';
 import { appBuildResponse, appMiddleware } from '@libs';
+import validator from '@middy/validator';
+import { transpileSchema } from '@middy/validator/transpile';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { getAuctionById } from './common';
+import { placeBidAuctionSchema } from './schemas';
 
 const placingBidAuction = async (event: APIGatewayProxyEvent, context: Context) => {
   try {
@@ -48,4 +51,11 @@ const placingBidAuction = async (event: APIGatewayProxyEvent, context: Context) 
   }
 };
 
-export const handler = appMiddleware(placingBidAuction);
+export const handler = appMiddleware(placingBidAuction).use(
+  validator({
+    eventSchema: transpileSchema(placeBidAuctionSchema, {
+      useDefaults: true,
+      strict: true
+    })
+  })
+);

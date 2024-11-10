@@ -7,7 +7,7 @@
     "dev": "sls offline --stage dev",
     "deploy": "sls deploy --verbose --stage dev",
     "remove": "sls revome",
-    "build": "tsc"
+    "build": "rimraf build && tsc"
   },
   "author": "@chaicopadillag",
   "license": "ISC",
@@ -17,12 +17,14 @@
     "@middy/http-error-handler": "^4.7.0",
     "@middy/http-event-normalizer": "^4.7.0",
     "@middy/http-json-body-parser": "^4.7.0",
+    "@middy/validator": "^5.5.1",
     "aws-sdk": "^2.1691.0",
     "uuid": "^11.0.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.145",
     "@types/node": "^22.8.6",
+    "rimraf": "^6.0.1",
     "serverless-localstack": "^1.2.1",
     "serverless-offline": "^14.3.3",
     "ts-node": "^10.9.2",

@@ -6,5 +6,11 @@ AuctionsTableIAM:
     - dynamodb:UpdateItem
     - dynamodb:DeleteItem
     - dynamodb:Scan
+    - dynamodb:Query
   Resource:
     - ${self:custom.AuctionsTable.arn}
+    - Fn::Join:
+        - '/'
+        - - ${self:custom.AuctionsTable.arn}
+          - index
+          - statusAndEndingAt

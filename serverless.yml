@@ -1,4 +1,3 @@
-
 org: devchaico
 app: auction-service
 service: auction-service
@@ -14,11 +13,9 @@ provider:
   iamRoleStatements:
     - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
 
-
 resources:
   Resources:
-    AuctionsTable: ${file(resources/AuctionsTable.yml):AuctionsTable}   
-
+    AuctionsTable: ${file(resources/AuctionsTable.yml):AuctionsTable}
 
 functions:
   - ${file(functions/auctions.yml)}
@@ -28,9 +25,6 @@ plugins:
   - serverless-localstack
 
 custom:
-  esbuild:
-    bundle: true
-    minify: true
   stage: '${opt:stage, "dev"}'
   AuctionsTable:
     name: !Ref AuctionsTable
@@ -46,3 +40,8 @@ custom:
     docker:
       sudo: False
 
+package:
+  individually: true
+  excludeDevDependencies: true
+  exclude:
+    - node_modules/**

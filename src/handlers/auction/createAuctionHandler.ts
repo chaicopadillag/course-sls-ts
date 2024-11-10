@@ -1,18 +1,24 @@
 import { dynamoDB } from '@/db';
 import { appBuildResponse, appMiddleware } from '@libs';
+import validator from '@middy/validator';
+import { transpileSchema } from '@middy/validator/transpile';
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { v4 as uuid } from 'uuid';
+import { createAuctionSchema } from './schemas';
 
 const createAuction = async (event: APIGatewayProxyEvent, context: Context) => {
   try {
     const body = event.body as any;
     const now = new Date();
+    const endDate = new Date();
+    const endingAt = new Date(endDate.setHours(now.getHours() + 1));
 
     const auction = {
       id: uuid(),
       title: body.title,
       status: 'OPEN',
-      createdAt: now.toISOString()
+      createdAt: now.toISOString(),
+      endingAt: endingAt.toISOString()
     };
 
     await dynamoDB
@@ -29,4 +35,11 @@ const createAuction = async (event: APIGatewayProxyEvent, context: Context) => {
   }
 };
 
-export const handler = appMiddleware(createAuction);
+export const handler = appMiddleware(createAuction).use(
+  validator({
+    eventSchema: transpileSchema(createAuctionSchema, {
+      useDefaults: true,
+      strict: true
+    })
+  })
+);
