@@ -1,20 +1,24 @@
 env:
   local:
-    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-    STAGE: "${self:custom.stage}"
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+    STAGE: '${self:custom.stage}'
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+    MAIL_QUEUE_URL: ${self:custom.mailQueueImport.url}
 
   dev:
-    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-    STAGE: "${self:custom.stage}"
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+    STAGE: '${self:custom.stage}'
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+    MAIL_QUEUE_URL: ${self:custom.mailQueueImport.url}
 
   qa:
-    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-    STAGE: "${self:custom.stage}"
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+    STAGE: '${self:custom.stage}'
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+    MAIL_QUEUE_URL: ${self:custom.mailQueueImport.url}
 
   prod:
-    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-    STAGE: "${self:custom.stage}"
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+    STAGE: '${self:custom.stage}'
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+    MAIL_QUEUE_URL: ${self:custom.mailQueueImport.url}

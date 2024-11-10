@@ -4,7 +4,7 @@ import { closeAuction, getEndedActions } from './helpers';
 const processAuctions = async (event: APIGatewayProxyEvent, context: Context) => {
   const auctionsToClose = await getEndedActions();
 
-  const closePromises = auctionsToClose.map((auction) => closeAuction(auction.id));
+  const closePromises = auctionsToClose.map((auction) => closeAuction(auction));
 
   await Promise.all(closePromises);
 

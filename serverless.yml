@@ -12,23 +12,46 @@ provider:
   environment: ${file(config/environment.yml):env.${self:custom.stage}}
   iamRoleStatements:
     - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
+    - ${file(iam/SendMailIAM.yml):SendMailIAM}
+    - ${file(iam/MailQueueIAM.yml):MailQueueIAM}
 
 resources:
   Resources:
     AuctionsTable: ${file(resources/AuctionsTable.yml):AuctionsTable}
+    MailQueue: ${file(resources/MailQueue.yml):MailQueue}
+  Outputs:
+    MailQueueArn: ${file(resources/MailQueue.yml):Outputs.MailQueueArn}
+    MailQueueUrl: ${file(resources/MailQueue.yml):Outputs.MailQueueUrl}
 
 functions:
   - ${file(functions/auctions.yml)}
+  - ${file(functions/mail.yml)}
 
 plugins:
   - serverless-offline
   - serverless-localstack
 
+package:
+  individually: true
+  excludeDevDependencies: true
+  exclude:
+    - node_modules/**
+
 custom:
   stage: '${opt:stage, "dev"}'
   AuctionsTable:
-    name: !Ref AuctionsTable
-    arn: !GetAtt AuctionsTable.Arn
+    name:
+      Ref: AuctionsTable
+    arn: { 'Fn::GetAtt': ['AuctionsTable', 'Arn'] }
+  mailQueue:
+    name: MailQueue-${self:provider.stage}
+    arn: { 'Fn::GetAtt': ['MailQueue', 'Arn'] }
+    url: { 'Ref': 'MailQueue' }
+  # import from cloudformation
+  mailQueueImport:
+    arn: ${cf:auction-service-${self:custom.stage}.MailQueueArn}
+    url: ${cf:auction-service-${self:custom.stage}.MailQueueUrl}
+
   localstack:
     stages:
       - local
@@ -39,9 +62,3 @@ custom:
       mountCode: True
     docker:
       sudo: False
-
-package:
-  individually: true
-  excludeDevDependencies: true
-  exclude:
-    - node_modules/**

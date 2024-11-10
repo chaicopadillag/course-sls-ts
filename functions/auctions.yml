@@ -25,6 +25,7 @@ updateAction:
     - httpApi:
         path: /auction/{id}
         method: PATCH
+
 processAuctions:
   handler: src/handlers/auction/processAuctionsHandler.handler
 # events:
